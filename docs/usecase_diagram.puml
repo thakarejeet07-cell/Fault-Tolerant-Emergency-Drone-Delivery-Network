@@ -1,0 +1,44 @@
+@startuml Drone_Delivery_Mesh_UseCase_Diagram
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor White
+  BorderColor Black
+}
+skinparam actor {
+  BackgroundColor White
+  BorderColor Black
+}
+
+actor "Simulation\nEngineer" as SimEng
+actor "Emergency\nDispatcher" as Dispatcher
+actor "External Emergency\nRequest System\n(EERS)" as EERS
+actor "GIS / Topography\nProvider" as GIS
+actor "Receiving Node\n(Ground Responder)" as Receiver
+
+rectangle "Drone Delivery Mesh for Emergency Response\n(Simulation System)" {
+  usecase "UC1: Configure\nNetwork Topology" as UC1
+  usecase "UC2: Load Spatial\nEnvironment" as UC2
+  usecase "UC3: Submit\nDelivery Request" as UC3
+  usecase "UC4: Assign\nPayload Priority\nTier" as UC4
+  usecase "UC5: Override\nPriority Queue" as UC5
+  usecase "UC6: Request Live\nTelemetry Stream" as UC6
+  usecase "UC7: Confirm\nPayload Handover" as UC7
+}
+
+' Actor associations
+SimEng -- UC1
+UC2 -- GIS
+Dispatcher -- UC3
+Dispatcher -- UC5
+EERS -- UC3
+EERS -- UC6
+Receiver -- UC7
+
+' Include / Extend relationships
+UC1 ..> UC2 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC5 ..> UC3 : <<extend>>
+
+@enduml
