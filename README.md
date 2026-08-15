@@ -24,3 +24,6 @@ The primary purpose of this system is to stress-test routing and prioritization 
 * The cascading effects of hardware failure or environmental hazards on the overall network.
 
 By simulating these variables, this system demonstrates how a decentralized drone fleet can coordinate, adapt to chaos, and guarantee the delivery of life-saving resources when traditional logistics fail.
+By simulating these variables, this system demonstrates how a decentralized drone fleet can coordinate, adapt to chaos, and guarantee the delivery of life-saving resources when traditional logistics fail.
+
+
