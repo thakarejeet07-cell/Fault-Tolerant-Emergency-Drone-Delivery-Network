@@ -1,5 +1,6 @@
 #  Fault-Tolerant Emergency Drone Delivery Network Simulator
 
+<<<<<<< HEAD
 ##  Overview
 In emergency response, seconds dictate survival rates. During events such as multi-alarm fires, natural disasters, or sudden cardiac arrests, traditional ground conveyance is frequently delayed by traffic gridlock, damaged infrastructure, or hazardous environments. 
 
@@ -24,3 +25,6 @@ The primary purpose of this system is to stress-test routing and prioritization 
 * The cascading effects of hardware failure or environmental hazards on the overall network.
 
 By simulating these variables, this system demonstrates how a decentralized drone fleet can coordinate, adapt to chaos, and guarantee the delivery of life-saving resources when traditional logistics fail.
+=======
+test
+>>>>>>> a34ce6e (test)
