@@ -1,0 +1,61 @@
+@startuml
+skinparam monochrome true
+skinparam style strictuml
+
+object "mainSim : Simulation" as sim {
+  isRunning = true
+}
+
+object "mainScheduler : EventScheduler" as scheduler {
+  queueSize = 1
+}
+
+object "centralDispatcher : Dispatcher" as dispatcher {
+  activeMissions = [MSN-1001]
+  missionQueue = [MSN-9999]
+}
+
+object "organDispatch : DispatchEvent" as evtHeart {
+  timestamp = 15305
+  priority = 10
+}
+
+object "drone_42 : Drone" as drone42 {
+  droneId = "DRN-042"
+  state = EN_ROUTE
+  batteryLevel = 84.5
+}
+
+object "drone42Loc : Coordinate" as loc42 {
+  latitude = 40.7128
+  longitude = -74.0060
+}
+
+object "bloodMission : Mission" as mBlood {
+  missionId = "MSN-1001"
+  priority = 3
+  status = ACTIVE
+  payloadType = "Blood Samples"
+}
+
+object "heartMission : Mission" as mHeart {
+  missionId = "MSN-9999"
+  priority = 10
+  status = PENDING
+  payloadType = "Organ: Heart"
+}
+
+' Links representing memory references at this exact moment
+sim *-- dispatcher
+sim *-- scheduler
+
+scheduler o-- evtHeart : queues
+
+dispatcher o-- mBlood : orchestrates
+dispatcher o-- mHeart : evaluates
+dispatcher o-- drone42 : tracks
+
+drone42 *-- loc42 : located at
+drone42 --> mBlood : currently executing
+
+@enduml
