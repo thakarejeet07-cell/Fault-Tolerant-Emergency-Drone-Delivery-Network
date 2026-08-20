@@ -1,0 +1,116 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam style strictuml
+
+' Enums & Structs for Data Representation
+enum DroneState {
+  IDLE
+  EN_ROUTE
+  REROUTING
+  FAULT_RECOVERY
+}
+
+enum MissionStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  ABORTED
+}
+
+class Coordinate <<struct>> {
+  + latitude: double
+  + longitude: double
+}
+
+' Abstract Base Event & Subclasses
+abstract class Event {
+  # timestamp: long
+  # priority: int
+  + execute(): void
+  + getTimestamp(): long
+  + getPriority(): int
+}
+
+class FaultEvent {
+  - errorCode: int
+  + execute(): void
+}
+
+class DispatchEvent {
+  + execute(): void
+}
+
+' Core Engine Components
+class Simulation {
+  - isRunning: bool
+  + initialize(): void
+  + start(): void
+  + stop(): void
+}
+
+class ThreadPool {
+  - numThreads: int
+  - workers: std::vector<std::thread>
+  + startPool(): void
+  + shutdown(): void
+  + assignTask(e: Event*): void
+}
+
+class EventScheduler {
+  - eventQueue: std::priority_queue<Event*>
+  - queueMutex: std::mutex
+  + scheduleEvent(e: Event*): void
+  + popNextEvent(): Event*
+}
+
+' Domain Entities
+class Dispatcher {
+  - activeMissions: std::vector<Mission*>
+  - missionQueue: std::priority_queue<Mission*>
+  + evaluatePreemption(newMission: Mission*): void
+  + assignDrone(m: Mission*): Drone*
+  + reallocateMission(m: Mission*): void
+  + interruptMission(m: Mission*): void
+}
+
+class Drone {
+  - droneId: std::string
+  - state: DroneState
+  - batteryLevel: float
+  - currentLocation: Coordinate
+  + updateState(newState: DroneState): void
+  + triggerCollisionAvoidance(): void
+  + handleFault(): void
+}
+
+class Mission {
+  - missionId: std::string
+  - priority: int
+  - status: MissionStatus
+  - payloadType: std::string
+  + getPriority(): int
+  + updateStatus(s: MissionStatus): void
+}
+
+' System Compositions (Simulation owns the core components)
+Simulation "1" *-- "1" ThreadPool : manages >
+Simulation "1" *-- "1" EventScheduler : drives >
+Simulation "1" *-- "1" Dispatcher : bootstraps >
+
+' Aggregations (Collections holding references)
+EventScheduler "1" o-- "0..*" Event : queues >
+Dispatcher "1" o-- "0..*" Mission : orchestrates >
+Dispatcher "1" o-- "1..*" Drone : tracks fleet >
+
+' Dependencies and Associations
+ThreadPool "1" ..> "0..*" Event : processes >
+Drone "0..1" --> "1" Mission : executes >
+Event <|-- FaultEvent
+Event <|-- DispatchEvent
+
+' Attribute Relationships
+Drone "1" *-- "1" Coordinate : located at >
+Mission "1" *-- "2" Coordinate : pickup/dropoff >
+
+@enduml
